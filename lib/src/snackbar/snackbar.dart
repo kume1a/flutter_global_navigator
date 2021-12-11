@@ -21,7 +21,7 @@ class GNSnackBar extends StatefulWidget {
     this.icon,
     this.shouldIconPulse = true,
     this.maxWidth,
-    this.margin = const EdgeInsets.all(0.0),
+    this.margin = EdgeInsets.zero,
     this.padding = const EdgeInsets.all(16),
     this.borderRadius = 0.0,
     this.borderColor,
@@ -319,12 +319,13 @@ class GNSnackBarState extends State<GNSnackBar> with TickerProviderStateMixin {
     super.initState();
 
     assert(
-        widget.userInputForm != null ||
-            ((widget.message != null && widget.message!.isNotEmpty) || widget.messageText != null),
-        '''
-You need to either use message[String], or messageText[Widget] or define a userInputForm[Form] in GetSnackbar''');
+      widget.userInputForm != null ||
+          ((widget.message != null && widget.message!.isNotEmpty) || widget.messageText != null),
+      '''
+You need to either use message[String], or messageText[Widget] or define a userInputForm[Form] in GetSnackbar''',
+    );
 
-    _isTitlePresent = (widget.title != null || widget.titleText != null);
+    _isTitlePresent = widget.title != null || widget.titleText != null;
     _messageTopMargin = _isTitlePresent ? 6.0 : widget.padding.top;
 
     _configureLeftBarFuture();
@@ -365,8 +366,8 @@ You need to either use message[String], or messageText[Widget] or define a userI
       (_) {
         final BuildContext? keyContext = _backgroundBoxKey.currentContext;
         if (keyContext != null) {
-          final RenderBox box = keyContext.findRenderObject() as RenderBox;
-          _boxHeightCompleter.complete(box.size);
+          final RenderBox? box = keyContext.findRenderObject() as RenderBox?;
+          _boxHeightCompleter.complete(box?.size);
         }
       },
     );
@@ -421,9 +422,9 @@ You need to either use message[String], or messageText[Widget] or define a userI
       child: Padding(
         padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0, top: 16.0),
         child: FocusScope(
-          child: widget.userInputForm!,
           node: _focusNode,
           autofocus: true,
+          child: widget.userInputForm!,
         ),
       ),
     );
@@ -450,16 +451,15 @@ You need to either use message[String], or messageText[Widget] or define a userI
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          widget.showProgressIndicator
-              ? LinearProgressIndicator(
-                  value:
-                      widget.progressIndicatorController != null ? _progressAnimation.value : null,
-                  backgroundColor: widget.progressIndicatorBackgroundColor,
-                  valueColor: widget.progressIndicatorValueColor,
-                )
-              : _emptyWidget,
+          if (widget.showProgressIndicator)
+            LinearProgressIndicator(
+              value: widget.progressIndicatorController != null ? _progressAnimation.value : null,
+              backgroundColor: widget.progressIndicatorBackgroundColor,
+              valueColor: widget.progressIndicatorValueColor,
+            )
+          else
+            _emptyWidget,
           Row(
-            mainAxisSize: MainAxisSize.max,
             children: <Widget>[
               _buildLeftBarIndicator(),
               if (_rowStyle == RowStyle.icon || _rowStyle == RowStyle.all)
@@ -468,7 +468,6 @@ You need to either use message[String], or messageText[Widget] or define a userI
                   child: _getIcon(),
                 ),
               Expanded(
-                flex: 1,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisSize: MainAxisSize.min,

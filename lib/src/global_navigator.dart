@@ -28,7 +28,7 @@ class GlobalNavigator {
     bool instantInit = true,
     bool shouldIconPulse = true,
     double? maxWidth,
-    EdgeInsets margin = const EdgeInsets.all(0.0),
+    EdgeInsets margin = EdgeInsets.zero,
     EdgeInsets padding = const EdgeInsets.all(16),
     double borderRadius = 0.0,
     Color? borderColor,
@@ -155,55 +155,56 @@ class GlobalNavigator {
     Form? userInputForm,
   }) {
     final GNSnackBar snackBar = GNSnackBar(
-        snackbarStatus: snackbarStatus,
-        titleText: titleText ??
-            Text(
-              title,
-              style: TextStyle(
-                color: colorText ?? Colors.black,
-                fontWeight: FontWeight.w800,
-                fontSize: 16,
-              ),
+      snackbarStatus: snackbarStatus,
+      titleText: titleText ??
+          Text(
+            title,
+            style: TextStyle(
+              color: colorText ?? Colors.black,
+              fontWeight: FontWeight.w800,
+              fontSize: 16,
             ),
-        messageText: messageText ??
-            Text(
-              message,
-              style: TextStyle(
-                color: colorText ?? Colors.black,
-                fontWeight: FontWeight.w300,
-                fontSize: 14,
-              ),
+          ),
+      messageText: messageText ??
+          Text(
+            message,
+            style: TextStyle(
+              color: colorText ?? Colors.black,
+              fontWeight: FontWeight.w300,
+              fontSize: 14,
             ),
-        snackPosition: snackPosition ?? SnackPosition.top,
-        borderRadius: borderRadius ?? 15,
-        margin: margin ?? const EdgeInsets.symmetric(horizontal: 10),
-        duration: duration,
-        barBlur: barBlur ?? 7.0,
-        backgroundColor: backgroundColor ?? Colors.grey.withOpacity(0.2),
-        icon: icon,
-        shouldIconPulse: shouldIconPulse ?? true,
-        maxWidth: maxWidth,
-        padding: padding ?? const EdgeInsets.all(16),
-        borderColor: borderColor,
-        borderWidth: borderWidth,
-        leftBarIndicatorColor: leftBarIndicatorColor,
-        boxShadows: boxShadows,
-        backgroundGradient: backgroundGradient,
-        mainButton: mainButton,
-        onTap: onTap,
-        isDismissible: isDismissible ?? true,
-        dismissDirection: dismissDirection,
-        showProgressIndicator: showProgressIndicator ?? false,
-        progressIndicatorController: progressIndicatorController,
-        progressIndicatorBackgroundColor: progressIndicatorBackgroundColor,
-        progressIndicatorValueColor: progressIndicatorValueColor,
-        snackStyle: snackStyle ?? SnackStyle.floating,
-        forwardAnimationCurve: forwardAnimationCurve ?? Curves.easeOutCirc,
-        reverseAnimationCurve: reverseAnimationCurve ?? Curves.easeOutCirc,
-        animationDuration: animationDuration ?? const Duration(milliseconds: 500),
-        overlayBlur: overlayBlur ?? 0.0,
-        overlayColor: overlayColor ?? Colors.transparent,
-        userInputForm: userInputForm);
+          ),
+      snackPosition: snackPosition ?? SnackPosition.top,
+      borderRadius: borderRadius ?? 15,
+      margin: margin ?? const EdgeInsets.symmetric(horizontal: 10),
+      duration: duration,
+      barBlur: barBlur ?? 7.0,
+      backgroundColor: backgroundColor ?? Colors.grey.withOpacity(0.2),
+      icon: icon,
+      shouldIconPulse: shouldIconPulse ?? true,
+      maxWidth: maxWidth,
+      padding: padding ?? const EdgeInsets.all(16),
+      borderColor: borderColor,
+      borderWidth: borderWidth,
+      leftBarIndicatorColor: leftBarIndicatorColor,
+      boxShadows: boxShadows,
+      backgroundGradient: backgroundGradient,
+      mainButton: mainButton,
+      onTap: onTap,
+      isDismissible: isDismissible ?? true,
+      dismissDirection: dismissDirection,
+      showProgressIndicator: showProgressIndicator ?? false,
+      progressIndicatorController: progressIndicatorController,
+      progressIndicatorBackgroundColor: progressIndicatorBackgroundColor,
+      progressIndicatorValueColor: progressIndicatorValueColor,
+      snackStyle: snackStyle ?? SnackStyle.floating,
+      forwardAnimationCurve: forwardAnimationCurve ?? Curves.easeOutCirc,
+      reverseAnimationCurve: reverseAnimationCurve ?? Curves.easeOutCirc,
+      animationDuration: animationDuration ?? const Duration(milliseconds: 500),
+      overlayBlur: overlayBlur ?? 0.0,
+      overlayColor: overlayColor ?? Colors.transparent,
+      userInputForm: userInputForm,
+    );
 
     final SnackbarController controller = SnackbarController(snackBar);
 
@@ -239,25 +240,26 @@ class GlobalNavigator {
       return null;
     }
 
-    return Navigator.of(overlayContext!, rootNavigator: useRootNavigator)
-        .push(ModalBottomSheetRoute<T>(
-      builder: (_) => bottomSheet,
-      isPersistent: persistent,
-      theme: Theme.of(navigatorKey!.currentContext!),
-      isScrollControlled: isScrollControlled,
-      barrierLabel:
-          MaterialLocalizations.of(navigatorKey!.currentContext!).modalBarrierDismissLabel,
-      backgroundColor: backgroundColor ?? Colors.transparent,
-      elevation: elevation,
-      shape: shape,
-      removeTop: ignoreSafeArea ?? true,
-      clipBehavior: clipBehavior,
-      isDismissible: isDismissible,
-      modalBarrierColor: barrierColor,
-      settings: settings,
-      enableDrag: enableDrag,
-      enterBottomSheetDuration: enterBottomSheetDuration ?? const Duration(milliseconds: 150),
-      exitBottomSheetDuration: exitBottomSheetDuration ?? const Duration(milliseconds: 100),
-    ));
+    return Navigator.of(overlayContext!, rootNavigator: useRootNavigator).push(
+      ModalBottomSheetRoute<T>(
+        builder: (_) => bottomSheet,
+        isPersistent: persistent,
+        theme: Theme.of(navigatorKey!.currentContext!),
+        isScrollControlled: isScrollControlled,
+        barrierLabel:
+            MaterialLocalizations.of(navigatorKey!.currentContext!).modalBarrierDismissLabel,
+        backgroundColor: backgroundColor ?? Colors.transparent,
+        elevation: elevation,
+        shape: shape,
+        removeTop: ignoreSafeArea ?? true,
+        clipBehavior: clipBehavior,
+        isDismissible: isDismissible,
+        modalBarrierColor: barrierColor,
+        settings: settings,
+        enableDrag: enableDrag,
+        enterBottomSheetDuration: enterBottomSheetDuration ?? const Duration(milliseconds: 150),
+        exitBottomSheetDuration: exitBottomSheetDuration ?? const Duration(milliseconds: 100),
+      ),
+    );
   }
 }

@@ -25,7 +25,7 @@ class SimpleQueue {
   bool _active = false;
 
   Future<T> add<T>(Function job) {
-    Completer<T> completer = Completer<T>();
+    final Completer<T> completer = Completer<T>();
     _queue.add(_Item(completer, job));
     _check();
     return completer.future;
@@ -35,10 +35,10 @@ class SimpleQueue {
     _queue.clear();
   }
 
-  void _check() async {
+  Future<void> _check() async {
     if (!_active && _queue.isNotEmpty) {
       _active = true;
-      _Item item = _queue.removeAt(0);
+      final _Item item = _queue.removeAt(0);
       try {
         item.completer.complete(await item.job());
       } on Exception catch (e) {

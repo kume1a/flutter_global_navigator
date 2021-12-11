@@ -40,7 +40,7 @@ class ModalBottomSheetRoute<T> extends PopupRoute<T> {
   final bool removeTop;
 
   @override
-  Duration get transitionDuration => Duration(milliseconds: 700);
+  Duration get transitionDuration => const Duration(milliseconds: 700);
 
   @override
   bool get barrierDismissible => isDismissible;
@@ -70,7 +70,10 @@ class ModalBottomSheetRoute<T> extends PopupRoute<T> {
 
   @override
   Widget buildPage(
-      BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+  ) {
     final BottomSheetThemeData sheetTheme =
         theme?.bottomSheetTheme ?? Theme.of(context).bottomSheetTheme;
     // By definition, the bottom sheet is aligned to the bottom of the page
@@ -154,14 +157,32 @@ class _ModalBottomSheetState<T> extends State<_ModalBottomSheet<T>> {
           explicitChildNodes: true,
           child: ClipRect(
             child: CustomSingleChildLayout(
-                delegate: _ModalBottomSheetLayout(animationValue, widget.isScrollControlled),
-                child: widget.isPersistent == false
-                    ? BottomSheet(
+              delegate: _ModalBottomSheetLayout(
+                progress: animationValue,
+                isScrollControlled: widget.isScrollControlled,
+              ),
+              child: widget.isPersistent == false
+                  ? BottomSheet(
+                      animationController: widget.route!._animationController,
+                      onClosing: () {
+                        if (widget.route!.isCurrent) {
+                          Navigator.pop(context);
+                        }
+                      },
+                      builder: widget.route!.builder!,
+                      backgroundColor: widget.backgroundColor,
+                      elevation: widget.elevation,
+                      shape: widget.shape,
+                      clipBehavior: widget.clipBehavior,
+                      enableDrag: widget.enableDrag,
+                    )
+                  : Scaffold(
+                      bottomSheet: BottomSheet(
                         animationController: widget.route!._animationController,
                         onClosing: () {
-                          if (widget.route!.isCurrent) {
-                            Navigator.pop(context);
-                          }
+                          // if (widget.route.isCurrent) {
+                          //   Navigator.pop(context);
+                          // }
                         },
                         builder: widget.route!.builder!,
                         backgroundColor: widget.backgroundColor,
@@ -169,23 +190,9 @@ class _ModalBottomSheetState<T> extends State<_ModalBottomSheet<T>> {
                         shape: widget.shape,
                         clipBehavior: widget.clipBehavior,
                         enableDrag: widget.enableDrag,
-                      )
-                    : Scaffold(
-                        bottomSheet: BottomSheet(
-                          animationController: widget.route!._animationController,
-                          onClosing: () {
-                            // if (widget.route.isCurrent) {
-                            //   Navigator.pop(context);
-                            // }
-                          },
-                          builder: widget.route!.builder!,
-                          backgroundColor: widget.backgroundColor,
-                          elevation: widget.elevation,
-                          shape: widget.shape,
-                          clipBehavior: widget.clipBehavior,
-                          enableDrag: widget.enableDrag,
-                        ),
-                      )),
+                      ),
+                    ),
+            ),
           ),
         );
       },
@@ -252,14 +259,32 @@ class _PerModalBottomSheetState<T> extends State<_PerModalBottomSheet<T>> {
           explicitChildNodes: true,
           child: ClipRect(
             child: CustomSingleChildLayout(
-                delegate: _ModalBottomSheetLayout(animationValue, widget.isScrollControlled),
-                child: widget.isPersistent == false
-                    ? BottomSheet(
+              delegate: _ModalBottomSheetLayout(
+                progress: animationValue,
+                isScrollControlled: widget.isScrollControlled,
+              ),
+              child: widget.isPersistent == false
+                  ? BottomSheet(
+                      animationController: widget.route!._animationController,
+                      onClosing: () {
+                        if (widget.route!.isCurrent) {
+                          Navigator.pop(context);
+                        }
+                      },
+                      builder: widget.route!.builder!,
+                      backgroundColor: widget.backgroundColor,
+                      elevation: widget.elevation,
+                      shape: widget.shape,
+                      clipBehavior: widget.clipBehavior,
+                      enableDrag: widget.enableDrag,
+                    )
+                  : Scaffold(
+                      bottomSheet: BottomSheet(
                         animationController: widget.route!._animationController,
                         onClosing: () {
-                          if (widget.route!.isCurrent) {
-                            Navigator.pop(context);
-                          }
+                          // if (widget.route.isCurrent) {
+                          //   Navigator.pop(context);
+                          // }
                         },
                         builder: widget.route!.builder!,
                         backgroundColor: widget.backgroundColor,
@@ -267,23 +292,9 @@ class _PerModalBottomSheetState<T> extends State<_PerModalBottomSheet<T>> {
                         shape: widget.shape,
                         clipBehavior: widget.clipBehavior,
                         enableDrag: widget.enableDrag,
-                      )
-                    : Scaffold(
-                        bottomSheet: BottomSheet(
-                          animationController: widget.route!._animationController,
-                          onClosing: () {
-                            // if (widget.route.isCurrent) {
-                            //   Navigator.pop(context);
-                            // }
-                          },
-                          builder: widget.route!.builder!,
-                          backgroundColor: widget.backgroundColor,
-                          elevation: widget.elevation,
-                          shape: widget.shape,
-                          clipBehavior: widget.clipBehavior,
-                          enableDrag: widget.enableDrag,
-                        ),
-                      )),
+                      ),
+                    ),
+            ),
           ),
         );
       },
@@ -292,7 +303,10 @@ class _PerModalBottomSheetState<T> extends State<_PerModalBottomSheet<T>> {
 }
 
 class _ModalBottomSheetLayout extends SingleChildLayoutDelegate {
-  _ModalBottomSheetLayout(this.progress, this.isScrollControlled);
+  _ModalBottomSheetLayout({
+    required this.progress,
+    required this.isScrollControlled,
+  });
 
   final double progress;
   final bool isScrollControlled;
@@ -302,7 +316,6 @@ class _ModalBottomSheetLayout extends SingleChildLayoutDelegate {
     return BoxConstraints(
       minWidth: constraints.maxWidth,
       maxWidth: constraints.maxWidth,
-      minHeight: 0.0,
       maxHeight: isScrollControlled ? constraints.maxHeight : constraints.maxHeight * 9.0 / 16.0,
     );
   }

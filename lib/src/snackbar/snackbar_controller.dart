@@ -78,13 +78,13 @@ class SnackbarController {
       case SnackPosition.top:
         {
           _initialAlignment = const Alignment(-1.0, -2.0);
-          _endAlignment = const Alignment(-1.0, -1.0);
+          _endAlignment = Alignment.topLeft;
           break;
         }
       case SnackPosition.bottom:
         {
           _initialAlignment = const Alignment(-1.0, 2.0);
-          _endAlignment = const Alignment(-1.0, 1.0);
+          _endAlignment = Alignment.bottomLeft;
           break;
         }
     }
@@ -142,12 +142,14 @@ class SnackbarController {
   /// to this route from the previous one, and back to the previous route
   /// from this one.
   AnimationController _createAnimationController() {
-    assert(!_transitionCompleter.isCompleted,
-        'Cannot create a animationController from a disposed snackbar');
+    assert(
+      !_transitionCompleter.isCompleted,
+      'Cannot create a animationController from a disposed snackbar',
+    );
     assert(snackbar.animationDuration >= Duration.zero);
     return AnimationController(
       duration: snackbar.animationDuration,
-      debugLabel: '$runtimeType',
+      debugLabel: 'SnackbarController',
       vsync: _overlayState!,
     );
   }
@@ -205,34 +207,32 @@ class SnackbarController {
               },
             ),
           ),
-          maintainState: false,
-          opaque: false,
         ),
       ],
       OverlayEntry(
         builder: (_) => Semantics(
+          focused: false,
+          container: true,
+          explicitChildNodes: true,
           child: AlignTransition(
             alignment: _animation,
             child:
                 snackbar.isDismissible ? _getDismissibleSnack(child) : _getSnackbarContainer(child),
           ),
-          focused: false,
-          container: true,
-          explicitChildNodes: true,
         ),
-        maintainState: false,
-        opaque: false,
       ),
     ];
   }
 
   Widget _getBodyWidget() {
-    return Builder(builder: (_) {
-      return GestureDetector(
-        child: snackbar,
-        onTap: snackbar.onTap != null ? () => snackbar.onTap?.call(snackbar) : null,
-      );
-    });
+    return Builder(
+      builder: (_) {
+        return GestureDetector(
+          onTap: snackbar.onTap != null ? () => snackbar.onTap?.call(snackbar) : null,
+          child: snackbar,
+        );
+      },
+    );
   }
 
   DismissDirection _getDefaultDismissDirection() {
@@ -311,7 +311,7 @@ class SnackbarController {
   }
 
   void _removeOverlay() {
-    for (OverlayEntry element in _overlayEntries) {
+    for (final OverlayEntry element in _overlayEntries) {
       element.remove();
     }
 
