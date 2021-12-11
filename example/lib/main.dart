@@ -54,7 +54,7 @@ class Home extends StatelessWidget {
                   GlobalNavigator.bottomSheet(
                     Container(
                       height: 200,
-                      color: Colors.red,
+                      child: const Text('child'),
                     ),
                   );
                 },

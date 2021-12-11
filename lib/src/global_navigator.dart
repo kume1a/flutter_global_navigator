@@ -262,7 +262,7 @@ class GlobalNavigator {
         isScrollControlled: isScrollControlled,
         barrierLabel:
             MaterialLocalizations.of(navigatorKey!.currentContext!).modalBarrierDismissLabel,
-        backgroundColor: backgroundColor ?? Colors.transparent,
+        backgroundColor: backgroundColor,
         elevation: elevation,
         shape: shape,
         removeTop: ignoreSafeArea ?? true,
