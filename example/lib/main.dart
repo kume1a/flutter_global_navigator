@@ -60,6 +60,19 @@ class Home extends StatelessWidget {
                 },
                 child: const Text('bottom sheet'),
               ),
+              ElevatedButton(
+                onPressed: () {
+                  GlobalNavigator.dialog(
+                    Dialog(
+                      child: Container(
+                        height: 200,
+                        color: Colors.red,
+                      ),
+                    ),
+                  );
+                },
+                child: const Text('dialog'),
+              ),
             ],
           ),
         ),
