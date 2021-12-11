@@ -1,0 +1,26 @@
+name: example
+description: demo for package global navigator
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  lint: ^1.7.2
+
+  global_navigator:
+    path:
+      ../
+
+flutter:
+  uses-material-design: true
