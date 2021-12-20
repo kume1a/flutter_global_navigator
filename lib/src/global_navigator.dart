@@ -174,7 +174,7 @@ class GlobalNavigator {
           Text(
             title,
             style: TextStyle(
-              color: colorText ?? Colors.black,
+              color: colorText,
               fontWeight: FontWeight.w800,
               fontSize: 16,
             ),
@@ -183,7 +183,7 @@ class GlobalNavigator {
           Text(
             message,
             style: TextStyle(
-              color: colorText ?? Colors.black,
+              color: colorText,
               fontWeight: FontWeight.w300,
               fontSize: 14,
             ),
