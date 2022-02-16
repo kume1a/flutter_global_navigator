@@ -22,6 +22,8 @@ class GlobalNavigator {
     return overlay;
   }
 
+  static BuildContext? get context => navigatorKey?.currentContext;
+
   /// give access to Theme.of(context)
   static ThemeData get theme {
     ThemeData _theme = ThemeData.fallback();
