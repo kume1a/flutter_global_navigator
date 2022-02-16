@@ -31,6 +31,14 @@ class GlobalNavigator {
     return _theme;
   }
 
+  Future<void> closeCurrentSnackbar() async {
+    await SnackbarController.closeCurrentSnackbar();
+  }
+
+  void closeAllSnackbars() {
+    SnackbarController.cancelAllSnackbars();
+  }
+
   static bool get isSnackBarBeingShown => SnackbarController.isSnackbarBeingShown;
 
   static SnackbarController rawSnackbar({
