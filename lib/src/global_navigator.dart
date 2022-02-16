@@ -56,7 +56,7 @@ class GlobalNavigator {
   }
 
   @optionalTypeArgs
-  Future<T?> pushNamed<T extends Object?>(
+  static Future<T?> pushNamed<T extends Object?>(
     String routeName, {
     Object? arguments,
     bool allowLastDuplicate = false,
@@ -73,7 +73,7 @@ class GlobalNavigator {
   }
 
   @optionalTypeArgs
-  Future<T?> pushReplacementNamed<T extends Object?, TO extends Object?>(
+  static Future<T?> pushReplacementNamed<T extends Object?, TO extends Object?>(
     String routeName, {
     TO? result,
     Object? arguments,
@@ -97,7 +97,7 @@ class GlobalNavigator {
     );
   }
 
-  void popUntil(String routeName) {
+  static void popUntil(String routeName) {
     currentStack.popUntil((SimpleRouteIdentifier e) => e.name == routeName);
 
     navigatorKey?.currentState
