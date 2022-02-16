@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import 'bottom_sheet/bottom_sheet_route.dart';
+import 'constants.dart';
 import 'dialog/dialog_route.dart';
 import 'simple_route_identifier.dart';
 import 'snackbar/snackbar.dart';
@@ -145,6 +146,15 @@ class GlobalNavigator {
       (_) => false,
       arguments: arguments,
     );
+  }
+
+  static Future<void> closeAllOverlays() async {
+    while (currentRouteIdentifier != null &&
+        (currentRouteIdentifier!.name.startsWith('bottom_sheet') ||
+            currentRouteIdentifier!.name.startsWith('dialog'))) {
+      currentStack.removeLast();
+      maybePop();
+    }
   }
 
   static Future<void> closeCurrentSnackbar() async => SnackbarController.closeCurrentSnackbar();
@@ -374,6 +384,8 @@ class GlobalNavigator {
       return null;
     }
 
+    currentStack.add(SimpleRouteIdentifier(name: 'bottom_sheet_${random.nextInt(intMaxValue)}'));
+
     return Navigator.of(overlayContext!, rootNavigator: useRootNavigator).push(
       ModalBottomSheetRoute<T>(
         builder: (_) => bottomSheet,
@@ -476,6 +488,9 @@ class GlobalNavigator {
     RouteSettings? routeSettings,
   }) {
     assert(!barrierDismissible || barrierLabel != null);
+
+    currentStack.add(SimpleRouteIdentifier(name: 'dialog_${random.nextInt(intMaxValue)}'));
+
     final NavigatorState nav = navigatorKey?.currentState ??
         Navigator.of(
           overlayContext!,
