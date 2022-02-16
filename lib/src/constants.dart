@@ -1,6 +1,6 @@
 import 'dart:math';
 
-const int intMinValue = -9223372036854775808;
-const int intMaxValue = 9223372036854775807;
+const int intMinValue = -0x80000000;
+const int intMaxValue = 0x7FFFFFFF;
 
-final random = Random();
+final Random random = Random();
