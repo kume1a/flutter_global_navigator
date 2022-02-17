@@ -121,7 +121,7 @@ class GlobalNavigator {
 
     return navigatorKey?.currentState?.pushNamedAndRemoveUntil<T>(
       newRouteName,
-      (Route<dynamic> route) => route.settings.name != tillRouteName,
+      (Route<dynamic> route) => route.settings.name == tillRouteName,
       arguments: arguments,
     );
   }
