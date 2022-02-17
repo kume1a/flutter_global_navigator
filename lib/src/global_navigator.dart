@@ -58,7 +58,7 @@ class GlobalNavigator {
   static Future<T?> pushNamed<T extends Object?>(
     String routeName, {
     Object? arguments,
-    bool allowLastDuplicate = false,
+    bool allowLastDuplicate = true,
   }) async {
     if (!allowLastDuplicate &&
         currentRouteIdentifier != null &&
@@ -76,7 +76,7 @@ class GlobalNavigator {
     String routeName, {
     TO? result,
     Object? arguments,
-    bool allowLastDuplicate = false,
+    bool allowLastDuplicate = true,
   }) async {
     if (!allowLastDuplicate &&
         currentRouteIdentifier != null &&
@@ -108,7 +108,7 @@ class GlobalNavigator {
     String newRouteName,
     String tillRouteName, {
     Object? arguments,
-    bool allowLastDuplicate = false,
+    bool allowLastDuplicate = true,
   }) async {
     if (!allowLastDuplicate &&
         currentRouteIdentifier != null &&
@@ -130,7 +130,7 @@ class GlobalNavigator {
   static Future<T?> pushNamedAndRemoveAll<T extends Object?>(
     String newRouteName, {
     Object? arguments,
-    bool allowLastDuplicate = false,
+    bool allowLastDuplicate = true,
   }) async {
     if (!allowLastDuplicate &&
         currentRouteIdentifier != null &&
