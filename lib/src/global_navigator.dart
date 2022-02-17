@@ -44,15 +44,14 @@ class GlobalNavigator {
     return _theme;
   }
 
-  static Future<bool> maybePop<T extends Object?>({
+  static Future<void> pop<T extends Object?>({
     T? result,
   }) async {
     if (currentStack.isNotEmpty) {
       currentStack.removeLast();
     }
 
-    final bool? r = await navigatorKey?.currentState?.maybePop(result);
-    return r ?? false;
+    return navigatorKey?.currentState?.pop(result);
   }
 
   @optionalTypeArgs
@@ -153,7 +152,7 @@ class GlobalNavigator {
         (currentRouteIdentifier!.name.startsWith('bottom_sheet') ||
             currentRouteIdentifier!.name.startsWith('dialog'))) {
       currentStack.removeLast();
-      maybePop();
+      pop();
     }
   }
 
