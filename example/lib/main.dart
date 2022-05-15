@@ -52,9 +52,9 @@ class Home extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   GlobalNavigator.bottomSheet(
-                    Container(
+                    const SizedBox(
                       height: 200,
-                      child: const Text('child'),
+                      child: Text('child'),
                     ),
                   );
                 },
