@@ -2,18 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import 'bottom_sheet/bottom_sheet_route.dart';
+import 'constants.dart';
 import 'dialog/dialog_route.dart';
+import 'simple_route_identifier.dart';
 import 'snackbar/snackbar.dart';
 import 'snackbar/snackbar_controller.dart';
+import 'utils/listx.dart';
 
 /// It replaces the Flutter Navigator, but needs no context.
 /// You can to use navigator.push(YourRoute()) rather
 /// Navigator.push(context, YourRoute());
 
+typedef RoutePredicate = bool Function(SimpleRouteIdentifier route);
+
 class GlobalNavigator {
   static GlobalKey<NavigatorState>? navigatorKey;
   static Curve defaultTransitionCurve = Curves.easeOutQuad;
   static Duration defaultTransitionDuration = const Duration(milliseconds: 300);
+
+  static List<SimpleRouteIdentifier> currentStack =
+      List<SimpleRouteIdentifier>.empty(growable: true);
+
+  static SimpleRouteIdentifier? get currentRouteIdentifier =>
+      currentStack.isNotEmpty ? currentStack.last : null;
 
   /// give access to current Overlay Context
   static BuildContext? get overlayContext {
@@ -21,6 +32,8 @@ class GlobalNavigator {
     navigatorKey?.currentState?.overlay?.context.visitChildElements((Element e) => overlay = e);
     return overlay;
   }
+
+  static BuildContext? get context => navigatorKey?.currentContext;
 
   /// give access to Theme.of(context)
   static ThemeData get theme {
@@ -30,6 +43,122 @@ class GlobalNavigator {
     }
     return _theme;
   }
+
+  static Future<void> pop<T extends Object?>({
+    T? result,
+  }) async {
+    if (currentStack.isNotEmpty) {
+      currentStack.removeLast();
+    }
+
+    return navigatorKey?.currentState?.pop(result);
+  }
+
+  @optionalTypeArgs
+  static Future<T?> pushNamed<T extends Object?>(
+    String routeName, {
+    Object? arguments,
+    bool allowLastDuplicate = true,
+  }) async {
+    if (!allowLastDuplicate &&
+        currentRouteIdentifier != null &&
+        currentRouteIdentifier?.name == routeName) {
+      return null;
+    }
+
+    currentStack.add(SimpleRouteIdentifier(name: routeName, args: arguments));
+
+    return navigatorKey?.currentState?.pushNamed(routeName, arguments: arguments);
+  }
+
+  @optionalTypeArgs
+  static Future<T?> pushReplacementNamed<T extends Object?, TO extends Object?>(
+    String routeName, {
+    TO? result,
+    Object? arguments,
+    bool allowLastDuplicate = true,
+  }) async {
+    if (!allowLastDuplicate &&
+        currentRouteIdentifier != null &&
+        currentRouteIdentifier?.name == routeName) {
+      return null;
+    }
+
+    if (currentStack.isNotEmpty) {
+      currentStack.removeLast();
+    }
+    currentStack.add(SimpleRouteIdentifier(name: routeName, args: arguments));
+
+    return navigatorKey?.currentState?.pushReplacementNamed(
+      routeName,
+      arguments: arguments,
+      result: result,
+    );
+  }
+
+  static void popUntil(String routeName) {
+    currentStack.popUntil((SimpleRouteIdentifier e) => e.name == routeName);
+
+    navigatorKey?.currentState
+        ?.popUntil((Route<dynamic> route) => route.settings.name == routeName);
+  }
+
+  @optionalTypeArgs
+  static Future<T?> pushNamedAndRemoveUntil<T extends Object?>(
+    String newRouteName,
+    String tillRouteName, {
+    Object? arguments,
+    bool allowLastDuplicate = true,
+  }) async {
+    if (!allowLastDuplicate &&
+        currentRouteIdentifier != null &&
+        currentRouteIdentifier?.name == newRouteName) {
+      return null;
+    }
+
+    currentStack.popUntil((SimpleRouteIdentifier e) => e.name == tillRouteName);
+    currentStack.add(SimpleRouteIdentifier(name: newRouteName, args: arguments));
+
+    return navigatorKey?.currentState?.pushNamedAndRemoveUntil<T>(
+      newRouteName,
+      (Route<dynamic> route) => route.settings.name == tillRouteName,
+      arguments: arguments,
+    );
+  }
+
+  @optionalTypeArgs
+  static Future<T?> pushNamedAndRemoveAll<T extends Object?>(
+    String newRouteName, {
+    Object? arguments,
+    bool allowLastDuplicate = true,
+  }) async {
+    if (!allowLastDuplicate &&
+        currentRouteIdentifier != null &&
+        currentRouteIdentifier?.name == newRouteName) {
+      return null;
+    }
+
+    currentStack.assign(SimpleRouteIdentifier(name: newRouteName, args: arguments));
+
+    return navigatorKey?.currentState?.pushNamedAndRemoveUntil<T>(
+      newRouteName,
+      (_) => false,
+      arguments: arguments,
+    );
+  }
+
+  static Future<void> closeAllOverlays() async {
+    while (currentRouteIdentifier != null &&
+        (currentRouteIdentifier!.name.startsWith('bottom_sheet') ||
+            currentRouteIdentifier!.name.startsWith('dialog'))) {
+      currentStack.removeLast();
+      pop();
+    }
+  }
+
+  static Future<void> closeCurrentSnackbar() async => SnackbarController.closeCurrentSnackbar();
+
+  static Future<void> closeAllSnackbars() async => SnackbarController.cancelAllSnackbars();
 
   static bool get isSnackBarBeingShown => SnackbarController.isSnackbarBeingShown;
 
@@ -254,6 +383,8 @@ class GlobalNavigator {
       return null;
     }
 
+    currentStack.add(SimpleRouteIdentifier(name: 'bottom_sheet_${random.nextInt(intMaxValue)}'));
+
     return Navigator.of(overlayContext!, rootNavigator: useRootNavigator).push(
       ModalBottomSheetRoute<T>(
         builder: (_) => bottomSheet,
@@ -356,6 +487,9 @@ class GlobalNavigator {
     RouteSettings? routeSettings,
   }) {
     assert(!barrierDismissible || barrierLabel != null);
+
+    currentStack.add(SimpleRouteIdentifier(name: 'dialog_${random.nextInt(intMaxValue)}'));
+
     final NavigatorState nav = navigatorKey?.currentState ??
         Navigator.of(
           overlayContext!,

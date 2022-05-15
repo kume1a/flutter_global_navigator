@@ -62,7 +62,7 @@ class SnackbarController {
   /// Adds GetSnackbar to a view queue.
   /// Only one GetSnackbar will be displayed at a time, and this method returns
   /// a future to when the snackbar disappears.
-  Future<void> show() {
+  Future<void> show() async {
     return _snackBarQueue._addJob(this);
   }
 
@@ -326,13 +326,9 @@ class SnackbarController {
     return future;
   }
 
-  static void cancelAllSnackbars() {
-    _snackBarQueue._cancelAllJobs();
-  }
+  static Future<void> cancelAllSnackbars() async => _snackBarQueue._cancelAllJobs();
 
-  static Future<void> closeCurrentSnackbar() async {
-    await _snackBarQueue._closeCurrentJob();
-  }
+  static Future<void> closeCurrentSnackbar() async => _snackBarQueue._closeCurrentJob();
 }
 
 class _SnackBarQueue {
