@@ -243,7 +243,7 @@ class GlobalNavigator {
     if (instantInit) {
       controller.show();
     } else {
-      SchedulerBinding.instance.addPostFrameCallback((_) {
+      SchedulerBinding.instance?.addPostFrameCallback((_) {
         controller.show();
       });
     }
@@ -355,7 +355,7 @@ class GlobalNavigator {
       controller.show();
     } else {
       //routing.isSnackbar = true;
-      SchedulerBinding.instance.addPostFrameCallback((_) {
+      SchedulerBinding.instance?.addPostFrameCallback((_) {
         controller.show();
       });
     }
