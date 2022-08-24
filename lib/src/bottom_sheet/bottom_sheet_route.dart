@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class ModalBottomSheetRoute<T> extends PopupRoute<T> {
-  ModalBottomSheetRoute({
+class GNBottomSheetRoute<T> extends PopupRoute<T> {
+  GNBottomSheetRoute({
     required this.isScrollControlled,
     this.builder,
     this.theme,
@@ -113,7 +113,7 @@ class _ModalBottomSheet<T> extends StatefulWidget {
     this.isPersistent = false,
   }) : super(key: key);
   final bool isPersistent;
-  final ModalBottomSheetRoute<T>? route;
+  final GNBottomSheetRoute<T>? route;
   final bool isScrollControlled;
   final Color? backgroundColor;
   final double? elevation;
@@ -213,7 +213,7 @@ class _PerModalBottomSheet<T> extends StatefulWidget {
     this.enableDrag = true,
   }) : super(key: key);
   final bool? isPersistent;
-  final ModalBottomSheetRoute<T>? route;
+  final GNBottomSheetRoute<T>? route;
   final bool isScrollControlled;
   final Color? backgroundColor;
   final double? elevation;

@@ -15,13 +15,23 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorObservers: <NavigatorObserver>[
+        GNObserver(),
+      ],
       title: 'global navigator demo',
       navigatorKey: navigatorKey,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       darkTheme: ThemeData.dark(),
-      home: const Home(),
+      routes: {
+        'test': (_) => const Scaffold(
+              body: Center(
+                child: Text('test'),
+              ),
+            ),
+        '/': (_) => const Home(),
+      },
       themeMode: ThemeMode.light,
     );
   }
@@ -61,17 +71,29 @@ class Home extends StatelessWidget {
                 child: const Text('bottom sheet'),
               ),
               ElevatedButton(
-                onPressed: () {
-                  GlobalNavigator.dialog(
-                    Dialog(
-                      child: Container(
-                        height: 200,
-                        color: Colors.red,
+                onPressed: () async {
+                  for (int i = 0; i < 3; ++i) {
+                    GlobalNavigator.dialog(
+                      Dialog(
+                        child: Container(
+                          height: 200,
+                          color: Colors.primaries[i],
+                        ),
                       ),
-                    ),
-                  );
+                    );
+                  }
+
+                  for (int i = 0; i < 3; ++i) {
+                    GlobalNavigator.snackbar('title', 'message');
+                  }
+                  await Future<void>.delayed(const Duration(seconds: 1));
+                  await GlobalNavigator.closeAllOverlays();
+                  GlobalNavigator.pushNamed('test');
+                  for (int i = 0; i < 3; ++i) {
+                    GlobalNavigator.snackbar('on another page', 'message');
+                  }
                 },
-                child: const Text('dialog'),
+                child: const Text('test'),
               ),
             ],
           ),
