@@ -34,6 +34,11 @@ class GlobalNavigator {
     return _theme;
   }
 
+  static Future<void> maybePop<T extends Object?>({
+    T? result,
+  }) async =>
+      navigatorKey?.currentState?.maybePop(result);
+
   static Future<void> pop<T extends Object?>({
     T? result,
   }) async =>
