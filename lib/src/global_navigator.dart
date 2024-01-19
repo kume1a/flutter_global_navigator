@@ -44,7 +44,6 @@ class GlobalNavigator {
   }) async =>
       navigatorKey?.currentState?.pop(result);
 
-  @optionalTypeArgs
   static Future<T?> pushNamed<T extends Object?>(
     String routeName, {
     Object? arguments,
@@ -52,7 +51,6 @@ class GlobalNavigator {
   }) async =>
       navigatorKey?.currentState?.pushNamed(routeName, arguments: arguments);
 
-  @optionalTypeArgs
   static Future<T?> pushReplacementNamed<T extends Object?, TO extends Object?>(
     String routeName, {
     TO? result,
@@ -65,10 +63,14 @@ class GlobalNavigator {
         result: result,
       );
 
-  static void popUntil(String routeName) => navigatorKey?.currentState
-      ?.popUntil((Route<dynamic> route) => route.settings.name == routeName);
+  static void popUntilName(String routeName) {
+    navigatorKey?.currentState?.popUntil((Route<dynamic> route) => route.settings.name == routeName);
+  }
 
-  @optionalTypeArgs
+  static void popUntil(RoutePredicate predicate) {
+    navigatorKey?.currentState?.popUntil(predicate);
+  }
+
   static Future<T?> pushNamedAndRemoveUntil<T extends Object?>(
     String newRouteName,
     String tillRouteName, {
@@ -81,7 +83,6 @@ class GlobalNavigator {
         arguments: arguments,
       );
 
-  @optionalTypeArgs
   static Future<T?> pushNamedAndRemoveAll<T extends Object?>(
     String newRouteName, {
     Object? arguments,
@@ -331,8 +332,7 @@ class GlobalNavigator {
         isPersistent: persistent,
         theme: Theme.of(navigatorKey!.currentContext!),
         isScrollControlled: isScrollControlled,
-        barrierLabel:
-            MaterialLocalizations.of(navigatorKey!.currentContext!).modalBarrierDismissLabel,
+        barrierLabel: MaterialLocalizations.of(navigatorKey!.currentContext!).modalBarrierDismissLabel,
         backgroundColor: backgroundColor,
         elevation: elevation,
         shape: shape,
@@ -370,8 +370,7 @@ class GlobalNavigator {
       ),
     );
 
-    final ThemeData theme =
-        Theme.of((navigatorKey ?? GlobalNavigator.navigatorKey)!.currentContext!);
+    final ThemeData theme = Theme.of((navigatorKey ?? GlobalNavigator.navigatorKey)!.currentContext!);
     return generalDialog<T>(
       pageBuilder: (
         BuildContext buildContext,
@@ -390,9 +389,8 @@ class GlobalNavigator {
         return dialog;
       },
       barrierDismissible: barrierDismissible,
-      barrierLabel:
-          MaterialLocalizations.of((navigatorKey ?? GlobalNavigator.navigatorKey)!.currentContext!)
-              .modalBarrierDismissLabel,
+      barrierLabel: MaterialLocalizations.of((navigatorKey ?? GlobalNavigator.navigatorKey)!.currentContext!)
+          .modalBarrierDismissLabel,
       barrierColor: barrierColor ?? const Color(0x4D000000),
       transitionDuration: transitionDuration ?? defaultTransitionDuration,
       transitionBuilder: (
@@ -524,7 +522,7 @@ class GlobalNavigator {
             ),
             child: Text(
               textConfirm ?? 'Ok',
-              style: TextStyle(color: confirmTextColor ?? theme.backgroundColor),
+              style: TextStyle(color: confirmTextColor ?? theme.colorScheme.background),
             ),
             onPressed: () {
               onConfirm?.call();
